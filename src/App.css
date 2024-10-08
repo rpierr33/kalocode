@@ -1,0 +1,36 @@
+.error-button,
+.success-button {
+  border-radius: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 20px 40px;
+  font-size: 14px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, padding 0.3s ease;
+}
+
+.error-button {
+  background: #ff8a73;
+}
+
+.success-button {
+  background: #5580ff;
+}
+
+@media (max-width: 768px) {
+  .error-button,
+  .success-button {
+    padding: 15px 30px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-button,
+  .success-button {
+    padding: 10px 20px;
+    font-size: 10px;
+  }
+}

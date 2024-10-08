@@ -1,0 +1,207 @@
+/* Portfolio container to hold all the portfolio items */
+.portfolio-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 50px 0;
+  padding: 15px;
+}
+
+.portfolio_bannerText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 48px;
+  font-weight: bold;
+  z-index: 2;
+}
+
+/* Individual portfolio card styling for three columns */
+.portfolio-card {
+  position: relative;
+  width: calc(33.33% - 20px);
+  max-height: 400px;
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.portfolio-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.portfolio-card:hover::after {
+  opacity: 0.7;
+}
+
+/* Image inside the card with better visual style */
+.portfolio-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+}
+
+/* Info section hidden by default, positioned in the center */
+.portfolio-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  color: #fff;
+  text-align: center;
+  z-index: 2;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  width: 95%;
+}
+
+/* Hover effect to show the info */
+.portfolio-card:hover .portfolio-info {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Zoom and opacity effect on hover */
+.portfolio-card:hover img {
+  transform: scale(1.15);
+  opacity: 0.3;
+}
+
+/* Title and Category styling for better appearance */
+.portfolio-info h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+.portfolio-card:hover h3 {
+  color: white;
+  opacity: 1;
+}
+
+.portfolio-info p {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Load More button styling */
+.load-more {
+  background-color: #ff6b6b;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin: 20px auto;
+  display: block;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.load-more:hover {
+  background-color: #ff4b4b;
+  transform: scale(1.05);
+}
+
+/* Loading spinner text */
+.loading {
+  font-size: 1.2rem;
+  color: #ff6b6b;
+  text-align: center;
+  margin: 20px 0;
+  animation: fade 1s infinite;
+}
+
+/* Simple fade animation for loading text */
+@keyframes fade {
+  0% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+/* Responsive design for tablet screens */
+@media (max-width: 1024px) {
+  .portfolio-card {
+    width: calc(50% - 20px);
+  }
+  .portfolio_bannerText {
+    font-size: 2rem;
+  }
+}
+
+/* Responsive design for mobile screens */
+@media (max-width: 768px) {
+  .portfolio-card {
+    width: calc(100% - 20px);
+  }
+  .portfolio_bannerText {
+    font-size: 0.6rem;
+  }
+}
+/* ================================================ single portfolio  ===================================*/
+
+.description_heading {
+  max-width: 60%;
+}
+@media (max-width: 1025px) {
+  .description-info {
+    flex-wrap: wrap;
+  }
+  .description_heading {
+    max-width: 100%;
+  }
+  .description_Information {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .portfolio-container {
+    flex-direction: column;
+  }
+
+  .slider {
+    width: 100%;
+  }
+
+  .description-info {
+    width: 100%;
+  }
+
+  .description_Information {
+    max-width: 100%;
+  }
+
+  .description_heading {
+    width: 100%;
+  }
+}

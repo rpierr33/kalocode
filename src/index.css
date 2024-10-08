@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: o;
+  font-family: "Aboreto", system-ui;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Aboreto", system-ui;
+}
+a,
+p,
+button {
+  font-family: "Kodchasan", sans-serif;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}

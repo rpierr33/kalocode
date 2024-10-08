@@ -1,0 +1,295 @@
+/* ====================== landing page ====================================== */
+.landing-page {
+  width: 100%;
+  height: 60vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: background-image 1s ease-in-out;
+}
+
+.content {
+  color: #fff;
+  padding: 20px;
+  max-width: 700px;
+}
+
+.content h1 {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  text-align: start;
+}
+
+.content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  text-align: start;
+}
+
+/* Tablet styles (max-width: 768px) */
+@media (max-width: 768px) {
+  .content h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    text-align: start;
+  }
+
+  .content {
+    padding: 0;
+  }
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+/* =================================== service ====================================== */
+
+.service {
+  min-height: 100vh;
+  margin-top: 70px;
+  padding: 2rem;
+}
+
+.text_heading {
+  font-family: "Poppins", sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 4rem;
+  padding-bottom: 3rem;
+  color: rgb(88, 70, 140);
+  text-align: center;
+}
+
+.h6_text {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 2.5rem;
+  color: rgb(88, 70, 140);
+  padding: 15px 0;
+}
+
+.p_text {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.75rem;
+  color: rgb(113, 108, 128);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .text_heading {
+    font-size: 2.5rem;
+    line-height: normal;
+  }
+
+  .h6_text {
+    font-size: 1.5rem;
+  }
+
+  .p_text {
+    font-size: 0.95rem;
+  }
+  .center-image img {
+    display: none;
+  }
+  .service {
+    padding: 0.5rem;
+  }
+  .feature-textTop {
+    padding-right: 20px;
+  }
+  .feature-textBottom {
+    padding-left: 20px;
+  }
+  .main-image {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text_heading {
+    font-size: 2rem;
+  }
+
+  .h6_text {
+    font-size: 1.2rem;
+  }
+
+  .p_text {
+    font-size: 0.85rem;
+  }
+
+  .main-image {
+    min-height: 300px;
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-textTop h6,
+  .feature-textBottom h6 {
+    text-align: left;
+  }
+
+  .feature-textTop p,
+  .feature-textBottom p {
+    text-align: left;
+  }
+}
+
+.feature-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.feature-container img {
+  top: 0;
+}
+.feature-textTop,
+.feature-textBottom {
+  max-width: 400px;
+}
+.feature-icon {
+  font-size: 4rem;
+  margin: 0 1rem;
+}
+
+.center-image {
+  display: flex;
+  justify-content: center;
+}
+
+.main-image {
+  min-height: 600px;
+  border-radius: 20px;
+}
+
+/* =================================================== reviews ==================================================== */
+
+.reviews {
+  position: relative;
+  overflow: hidden;
+}
+
+.review-container {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.review {
+  flex: 0 0 100%;
+  text-align: center;
+}
+
+.h6_text {
+  font-size: 1.5rem;
+}
+
+.p_text {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* ========================================================== Card ====================================================== */
+.card-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 20px;
+  margin: 50px 0;
+}
+
+.card {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  padding: 15px;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  border-radius: 10px;
+  box-shadow: rgba(88, 70, 140, 0.1) 0px 8px 24px,
+    rgba(88, 70, 140, 0.1) 0px 16px 56px, rgba(88, 70, 140, 0.1) 0px 24px 80px;
+}
+
+.progress-circle {
+  margin-bottom: 15px;
+}
+
+.card-title {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.card-description {
+  margin-top: 5px;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .card {
+    max-width: 100%;
+  }
+
+  .articles img {
+    width: 100%;
+    height: auto;
+  }
+
+  .icons {
+    display: flex;
+    justify-content: center;
+  }
+}
+/* ========================================= trustee page =============================================*/
+
+.trustees-carousel {
+  width: 100%; /* Full width of the parent container */
+  overflow: hidden; /* Hide the overflow */
+  padding: 20px 0;
+  background-color: #f9f9f9;
+  margin: 100px 0;
+}
+
+.trustees-track {
+  display: flex;
+  animation: scroll 20s linear infinite;
+  white-space: nowrap;
+}
+
+.trustee-image {
+  max-width: 100px;
+  margin-right: 15px;
+  display: inline-block;
+}
+
+/* Keyframes to create the infinite scroll effect */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Scroll by 50% to smoothly loop */
+  }
+}

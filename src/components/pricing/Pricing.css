@@ -1,0 +1,169 @@
+/* ========================================== pricing card */
+.pricing_cardsHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+.pricing_cardsHeader p {
+  max-width: 600px;
+}
+.pricing_cards {
+  padding: 50px;
+}
+
+.pricing_cardsHeader {
+  margin-bottom: 50px;
+}
+
+.text_heading {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.p_text {
+  color: #666;
+  line-height: 1.5;
+}
+.card_header {
+  height: 100%;
+  padding: 0 15px;
+}
+.card_header h2 {
+  font-size: 60px;
+  color: #6c63ff;
+}
+
+.card_header p {
+  text-align: right;
+  font-size: 14px;
+  color: #888;
+}
+.card_body {
+  text-align: start;
+}
+
+.card_body ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.card_body ul li {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 28px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.read_more_button {
+  background-color: #6c63ff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.read_more_button:hover {
+  background-color: #5a54d1;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border: 1px solid #e1e5fa;
+  padding: 10px;
+  text-align: center;
+}
+
+.comparison-table th {
+  padding: 15px 0;
+}
+
+.comparison-table td {
+  font-size: 16px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .card {
+    flex: 1 1 calc(50% - 40px);
+  }
+
+  .card_header h2 {
+    font-size: 2rem;
+  }
+
+  .text_heading {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex: 1 1 100%;
+  }
+
+  .pricing_cards {
+    padding: 0;
+  }
+  .card-container {
+    padding: 0;
+  }
+
+  .pricing_cardsHeader p {
+    max-width: 100%;
+    padding: 0 15px;
+  }
+
+  .card_header h2 {
+    font-size: 1.5rem;
+  }
+
+  .text_heading {
+    font-size: 1.75rem;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing_cardsHeader {
+    margin-bottom: 30px;
+  }
+
+  .pricing_cardsHeader p {
+    text-align: center;
+  }
+
+  .card_header h2 {
+    font-size: 1.25rem;
+  }
+
+  .card_body ul li {
+    font-size: 14px;
+  }
+
+  .read_more_button {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    font-size: 12px;
+  }
+}
