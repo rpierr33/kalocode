@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Header.css";
+import Payment from "../../pages/Payment";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -52,6 +53,9 @@ const Header = () => {
       />
 
       <nav className="desktop-nav">
+        <li>
+          <Payment />
+        </li>
         <li>
           <Link
             href="/"
