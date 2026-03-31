@@ -1,10 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CartProvider, useCart } from '@/lib/cart-context'
-import { MENU_DATA, MenuItemData } from '@/lib/menu-data'
 import { ORDER_CATEGORIES, CATEGORY_LABELS } from '@/lib/types'
 import { formatPrice, FL_TAX_RATE } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -16,20 +15,52 @@ import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import {
   ShoppingCart, Plus, Minus, Trash2, X, ExternalLink,
-  CheckCircle, Clock, ChevronDown
+  CheckCircle, Clock,
 } from 'lucide-react'
+
+interface DbMenuItem {
+  id: string
+  name: string
+  description: string | null
+  price: number
+  category: string
+  imageUrl: string | null
+  glassPrice: number | null
+  bottlePrice: number | null
+  tags: string[]
+}
 
 function OrderContent() {
   const [activeCategory, setActiveCategory] = useState('appetizer')
   const [cartOpen, setCartOpen] = useState(false)
   const [orderPlaced, setOrderPlaced] = useState<{ orderNumber: string } | null>(null)
+  const [menuItems, setMenuItems] = useState<DbMenuItem[]>([])
+  const [menuLoading, setMenuLoading] = useState(true)
   const { items, addItem, removeItem, updateQuantity, clearCart, totalItems, subtotal } = useCart()
 
-  const filteredItems = MENU_DATA.filter((item) => item.category === activeCategory)
+  // Fetch menu items from API (with real DB IDs)
+  useEffect(() => {
+    async function fetchMenu() {
+      try {
+        const res = await fetch('/api/menu')
+        if (!res.ok) throw new Error('Failed to fetch menu')
+        const data = await res.json()
+        setMenuItems(data)
+      } catch (err) {
+        console.error('Failed to load menu:', err)
+        toast.error('Failed to load menu items')
+      } finally {
+        setMenuLoading(false)
+      }
+    }
+    fetchMenu()
+  }, [])
+
+  const filteredItems = menuItems.filter((item) => item.category === activeCategory)
   const tax = parseFloat((subtotal * FL_TAX_RATE).toFixed(2))
   const total = subtotal + tax
 
-  function handleAddItem(item: MenuItemData, variant?: 'glass' | 'bottle') {
+  function handleAddItem(item: DbMenuItem, variant?: 'glass' | 'bottle') {
     const price = variant === 'glass' && item.glassPrice
       ? item.glassPrice
       : variant === 'bottle' && item.bottlePrice
@@ -37,13 +68,13 @@ function OrderContent() {
       : item.price
 
     addItem({
-      menuItemId: item.name.toLowerCase().replace(/\s+/g, '-'),
+      menuItemId: item.id,
       name: item.name,
       price,
       quantity: 1,
       variant,
       addOns: [],
-      imageUrl: item.imageUrl,
+      imageUrl: item.imageUrl || undefined,
     })
     toast.success(`${item.name} added to cart`)
   }
@@ -59,6 +90,11 @@ function OrderContent() {
 
     if (!customerName || !customerEmail || !customerPhone) {
       toast.error('Please fill in all required fields')
+      return
+    }
+
+    if (items.length === 0) {
+      toast.error('Your cart is empty')
       return
     }
 
@@ -85,13 +121,17 @@ function OrderContent() {
         }),
       })
 
-      if (!res.ok) throw new Error('Order failed')
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null)
+        throw new Error(errorData?.error || 'Order failed')
+      }
 
       const order = await res.json()
       setOrderPlaced({ orderNumber: order.orderNumber })
       clearCart()
       setCartOpen(false)
-    } catch {
+    } catch (err) {
+      console.error('Order error:', err)
       toast.error('Failed to place order. Please try again.')
     }
   }
@@ -142,107 +182,118 @@ function OrderContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="section-label mb-3">Order Online</p>
+          <p className="text-[11px] font-sans uppercase tracking-[0.35em] mb-3" style={{ color: '#C9A84C' }}>Order Online</p>
           <h1 className="text-3xl md:text-4xl font-serif font-light" style={{ color: '#F5F0E8' }}>
             What Are You Craving?
           </h1>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Category sidebar (desktop) / top bar (mobile) */}
-          <div className="lg:w-56 shrink-0">
-            <div className="lg:sticky lg:top-24 flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
-              {ORDER_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs font-sans uppercase tracking-wider transition-all duration-200 ${
-                    activeCategory === cat
-                      ? 'bg-wine text-cream'
-                      : 'text-cream/50 hover:text-cream hover:bg-surface'
-                  }`}
-                >
-                  {CATEGORY_LABELS[cat] || cat}
-                </button>
-              ))}
-            </div>
+        {menuLoading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="w-8 h-8 border-2 border-wine/30 border-t-wine rounded-full animate-spin" />
           </div>
-
-          {/* Menu Items Grid */}
-          <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {filteredItems.map((item, i) => {
-                const isWine = item.category === 'wine_white' || item.category === 'wine_red'
-
-                return (
-                  <motion.div
-                    key={`${item.name}-${item.category}`}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: i * 0.03 }}
-                    className="glass-card rounded-xl overflow-hidden border border-surface-border/30 flex flex-col"
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Category sidebar */}
+            <div className="lg:w-56 shrink-0">
+              <div className="lg:sticky lg:top-24 flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
+                {ORDER_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs font-sans uppercase tracking-wider transition-all duration-200 ${
+                      activeCategory === cat
+                        ? 'bg-wine text-cream'
+                        : 'text-cream/50 hover:text-cream hover:bg-surface'
+                    }`}
                   >
-                    {item.imageUrl && (
-                      <div className="relative aspect-[16/10] overflow-hidden">
-                        <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-surface/80 to-transparent" />
-                      </div>
-                    )}
-                    <div className="p-4 flex-1 flex flex-col">
-                      <h3 className="font-serif text-base text-cream/95 mb-1">{item.name}</h3>
-                      {item.description && (
-                        <p className="text-cream/40 text-xs font-sans line-clamp-2 mb-3 flex-1">
-                          {item.description}
-                        </p>
+                    {CATEGORY_LABELS[cat] || cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Menu Items Grid */}
+            <div className="flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                {filteredItems.map((item, i) => {
+                  const isWine = item.category === 'wine_white' || item.category === 'wine_red'
+
+                  return (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: i * 0.03 }}
+                      className="glass-card rounded-xl overflow-hidden border border-surface-border/30 flex flex-col"
+                    >
+                      {item.imageUrl && (
+                        <div className="relative aspect-[16/10] overflow-hidden">
+                          <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-surface/80 to-transparent" />
+                        </div>
                       )}
-                      <div className="flex items-end justify-between gap-2 mt-auto">
-                        <span className="font-serif text-gold text-lg">
-                          {isWine && item.glassPrice
-                            ? `${formatPrice(item.glassPrice)} / ${formatPrice(item.bottlePrice || item.price)}`
-                            : formatPrice(item.price)}
-                        </span>
-                        {isWine && item.glassPrice ? (
-                          <div className="flex gap-1">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleAddItem(item, 'glass')}
-                              className="text-xs"
-                            >
-                              Glass
-                            </Button>
-                            <Button
-                              size="sm"
-                              onClick={() => handleAddItem(item, 'bottle')}
-                              className="text-xs"
-                            >
-                              Bottle
-                            </Button>
-                          </div>
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={() => handleAddItem(item)}
-                            className="gap-1"
-                          >
-                            <Plus size={14} /> Add
-                          </Button>
+                      <div className="p-4 flex-1 flex flex-col">
+                        <h3 className="font-serif text-base text-cream/95 mb-1">{item.name}</h3>
+                        {item.description && (
+                          <p className="text-cream/40 text-xs font-sans line-clamp-2 mb-3 flex-1">
+                            {item.description}
+                          </p>
                         )}
+                        <div className="flex items-end justify-between gap-2 mt-auto">
+                          <span className="font-serif text-gold text-lg">
+                            {isWine && item.glassPrice
+                              ? `${formatPrice(item.glassPrice)} / ${formatPrice(item.bottlePrice || item.price)}`
+                              : formatPrice(item.price)}
+                          </span>
+                          {isWine && item.glassPrice ? (
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleAddItem(item, 'glass')}
+                                className="text-xs"
+                              >
+                                Glass
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => handleAddItem(item, 'bottle')}
+                                className="text-xs"
+                              >
+                                Bottle
+                              </Button>
+                            </div>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={() => handleAddItem(item)}
+                              className="gap-1"
+                            >
+                              <Plus size={14} /> Add
+                            </Button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                )
-              })}
+                    </motion.div>
+                  )
+                })}
+                {filteredItems.length === 0 && (
+                  <p className="text-cream/30 text-sm font-sans col-span-full text-center py-12">
+                    No items in this category
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Floating Cart Button (mobile) */}
+      {/* Floating Cart Button — visible on ALL screen sizes */}
       {totalItems > 0 && (
         <button
           onClick={() => setCartOpen(true)}
-          className="lg:hidden fixed bottom-6 right-6 z-40 bg-wine text-cream rounded-full px-6 py-3 flex items-center gap-2 shadow-lg shadow-wine/20 btn-glow"
+          className="fixed bottom-6 right-6 z-40 bg-wine text-cream rounded-full px-6 py-3 flex items-center gap-2 shadow-lg shadow-wine/20 btn-glow hover:bg-wine-hover transition-all duration-300"
         >
           <ShoppingCart size={18} />
           <span className="font-sans text-sm">{totalItems} items &middot; {formatPrice(subtotal)}</span>
@@ -251,18 +302,16 @@ function OrderContent() {
 
       {/* Cart Drawer */}
       <AnimatePresence>
-        {(cartOpen || (typeof window !== 'undefined' && window.innerWidth >= 1024 && totalItems > 0)) && (
+        {cartOpen && (
           <>
-            {/* Overlay (mobile) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setCartOpen(false)}
-              className="lg:hidden fixed inset-0 bg-black/60 z-40"
+              className="fixed inset-0 bg-black/60 z-40"
             />
 
-            {/* Cart Panel */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -333,7 +382,6 @@ function OrderContent() {
                     </div>
                   </div>
 
-                  {/* Order form */}
                   <form action={handlePlaceOrder} className="space-y-3">
                     <Input name="customerName" placeholder="Your Name *" required />
                     <Input name="customerEmail" type="email" placeholder="Email *" required />

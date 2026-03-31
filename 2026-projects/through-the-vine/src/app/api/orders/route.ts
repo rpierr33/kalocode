@@ -46,6 +46,7 @@ export async function POST(request: Request) {
   const total = parseFloat((subtotal + tax).toFixed(2))
   const orderNumber = generateOrderNumber()
 
+  try {
   const order = await prisma.order.create({
     data: {
       orderNumber,
@@ -87,4 +88,11 @@ export async function POST(request: Request) {
   })
 
   return NextResponse.json(order, { status: 201 })
+  } catch (error) {
+    console.error('Order creation failed:', error)
+    return NextResponse.json(
+      { error: 'Failed to create order. Please try again.' },
+      { status: 500 }
+    )
+  }
 }
