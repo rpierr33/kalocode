@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+}
+
+model MenuItem {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  category    String
+  imageUrl    String?
+  available   Boolean     @default(true)
+  glassPrice  Float?
+  bottlePrice Float?
+  tags        String[]
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id                  String      @id @default(cuid())
+  orderNumber         String      @unique
+  customerName        String
+  customerEmail       String
+  customerPhone       String
+  orderType           String
+  tableNumber         String?
+  pickupTime          String?
+  specialInstructions String?
+  subtotal            Float
+  tax                 Float
+  total               Float
+  status              String      @default("pending")
+  statusHistory       Json        @default("[]")
+  items               OrderItem[]
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  name       String
+  price      Float
+  quantity   Int
+  variant    String?
+  addOns     Json     @default("[]")
+  createdAt  DateTime @default(now())
+}
+
+model Reservation {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  date         String
+  time         String
+  partySize    Int
+  specialNotes String?
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Inquiry {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  message     String
+  inquiryType String
+  status      String   @default("new")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
