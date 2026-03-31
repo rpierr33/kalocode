@@ -46,6 +46,8 @@ model Order {
   tax                 Float
   total               Float
   status              String      @default("pending")
+  paymentMethod       String      @default("pay_at_pickup")
+  paymentIntentId     String?
   statusHistory       Json        @default("[]")
   items               OrderItem[]
   createdAt           DateTime    @default(now())

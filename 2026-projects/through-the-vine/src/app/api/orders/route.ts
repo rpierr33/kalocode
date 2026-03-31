@@ -21,6 +21,8 @@ export async function POST(request: Request) {
     tableNumber,
     pickupTime,
     specialInstructions,
+    paymentMethod,
+    paymentIntentId,
     items,
   } = body
 
@@ -61,8 +63,14 @@ export async function POST(request: Request) {
       tax,
       total,
       status: 'pending',
+      paymentMethod: paymentMethod || 'pay_at_pickup',
+      paymentIntentId: paymentIntentId || null,
       statusHistory: JSON.stringify([
-        { status: 'pending', timestamp: new Date().toISOString(), note: 'Order placed' },
+        {
+          status: 'pending',
+          timestamp: new Date().toISOString(),
+          note: paymentMethod === 'paid_online' ? 'Order placed — paid online' : 'Order placed — pay at pickup',
+        },
       ]),
       items: {
         create: items.map(
