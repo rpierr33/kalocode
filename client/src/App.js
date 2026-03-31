@@ -14,6 +14,7 @@ import ChatWidget from "./utils/chartAgent";
 import Admin from "./pages/Admin";
 import PrivateRoute from "./utils/PrivateRoute";
 import Login from "./pages/Login";
+import Completion from "./pages/Completion";
 
 const router = createBrowserRouter([
   {
@@ -76,11 +77,15 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  {
+    path: "/completion",
+    element: <Completion />,
+  },
 ]);
 
 function App() {
   const noMessagesPages = ["/login", "/admin"];
-  const currentPath = window.location.pathname; // Get the current path
+  const currentPath = window.location.pathname;
 
   useEffect(() => {
     AOS.init({
